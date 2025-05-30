@@ -1,6 +1,7 @@
 body {
   margin: 0;
   overflow: hidden;
+  font-family: 'Orbitron', sans-serif;
   background: black;
 }
 
@@ -8,13 +9,48 @@ canvas {
   display: block;
 }
 
-#hud {
+/* HUD de inicio */
+#hudInicio {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
   color: #00ffff;
-  font-size: 22px;
-  font-family: 'Orbitron', sans-serif;
   text-shadow: 0 0 10px #00ffff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border: 2px solid #00ffff;
+  border-radius: 15px;
   z-index: 10;
+}
+
+#hudInicio h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+#nombreJugador {
+  padding: 10px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  width: 250px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#iniciarBtn {
+  padding: 10px 20px;
+  font-size: 20px;
+  background: #00ffff;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+#iniciarBtn:hover {
+  background: #00dddd;
 }

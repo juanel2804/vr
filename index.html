@@ -6,12 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/examples/jsm/webxr/VRButton.js" type="module"></script>
-  <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
-  </style>
+  <link rel="stylesheet" href="./css/style.css">
+  
 </head>
 <body>
+
+  <!-- HUD de inicio -->
+  <div id="hudInicio">
+    <h1>Bienvenido a Espadas vs Drones</h1>
+    <input id="nombreJugador" placeholder="Ingresa tu nombre" /><br>
+    <button id="iniciarBtn">Iniciar juego</button>
+  </div>
   <script type="module" src="./js/main.js">
   </script>
 </body>

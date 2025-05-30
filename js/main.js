@@ -8,6 +8,19 @@ loader.load('./img/958b134f-51b7-4d13-84d1-00460ba8c901.png', function (texture)
   scene.background = texture;
 });
 
+document.getElementById('iniciarBtn').addEventListener('click', () => {
+  const hud = document.getElementById('hudInicio');
+  const nombre = document.getElementById('nombreJugador').value.trim();
+
+  if (nombre.length === 0) {
+    alert('Por favor, escribe tu nombre.');
+    return;
+  }
+
+  hud.style.display = 'none'; // Oculta HUD
+  localStorage.setItem('jugador', nombre); // (opcional) Guarda el nombre
+});
+
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.position.z = 3;
 
