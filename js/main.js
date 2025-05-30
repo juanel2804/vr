@@ -8,6 +8,7 @@ loader.load('./img/958b134f-51b7-4d13-84d1-00460ba8c901.png', function (texture)
   scene.background = texture;
 });
 
+
 document.getElementById('iniciarBtn').addEventListener('click', () => {
   const hud = document.getElementById('hudInicio');
   const nombre = document.getElementById('nombreJugador').value.trim();
@@ -77,6 +78,12 @@ controller2.add(sword2);
 scene.add(controller1);
 scene.add(controller2);
 
+function mostrarGameOver() {
+  document.getElementById('hudGameOver').style.display = 'block';
+  renderer.setAnimationLoop(null); // Detiene la animación
+}
+
+
 renderer.setAnimationLoop(() => {
   // Crear una copia del arreglo para evitar errores al modificarlo
   for (let i = drones.length - 1; i >= 0; i--) {
@@ -104,7 +111,29 @@ renderer.setAnimationLoop(() => {
       scene.remove(drone);
       drones.splice(i, 1);
     }
+    for (let i = drones.length - 1; i >= 0; i--) {
+  const drone = drones[i];
+  drone.position.z += 0.05;
+
+  // Verificar colisión con la cámara
+  const distanciaACamara = drone.position.distanceTo(camera.position);
+  if (distanciaACamara < 0.5) {
+    mostrarGameOver();
+    return;
   }
+
+  // Eliminar si se pasa
+  if (drone.position.z > 2) {
+    scene.remove(drone);
+    drones.splice(i, 1);
+    continue;
+  }
+
+  // Colisión con espadas...
+}
+
+  }
+  
 
   // Spawn aleatorio de drones
   if (Math.random() < 0.02) spawnDrone();
@@ -118,4 +147,7 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+});
+document.getElementById('reiniciarBtn').addEventListener('click', () => {
+  location.reload(); // Recarga la página completamente
 });

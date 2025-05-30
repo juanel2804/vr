@@ -54,3 +54,37 @@ canvas {
 #iniciarBtn:hover {
   background: #00dddd;
 }
+#hudGameOver {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #ff0044;
+  text-shadow: 0 0 10px #ff0044;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 40px;
+  border: 2px solid #ff0044;
+  border-radius: 15px;
+  z-index: 11;
+}
+
+#hudGameOver h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+#reiniciarBtn {
+  padding: 10px 20px;
+  font-size: 20px;
+  background: #ff0044;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 10px #ff0044;
+}
+
+#reiniciarBtn:hover {
+  background: #cc0033;
+}
