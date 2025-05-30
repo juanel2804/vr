@@ -2,6 +2,8 @@ import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.136.0/examples/js
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.module.js';
 
 const scene = new THREE.Scene();
+let jugadorDerrotado = false;
+
 scene.fog = new THREE.FogExp2(0x111122, 0.1);
 const loader = new THREE.TextureLoader();
 loader.load('./img/958b134f-51b7-4d13-84d1-00460ba8c901.png', function (texture) {
@@ -79,12 +81,21 @@ scene.add(controller1);
 scene.add(controller2);
 
 function mostrarGameOver() {
+  if (jugadorDerrotado) return; // Evita múltiples ejecuciones
+
+  jugadorDerrotado = true;
+  const nombre = localStorage.getItem('jugador') || "Jugador";
+  const mensaje = document.querySelector('#hudGameOver h1');
+  mensaje.textContent = `¡Perdiste, ${nombre}!`;
+
   document.getElementById('hudGameOver').style.display = 'block';
-  renderer.setAnimationLoop(null); // Detiene la animación
+  renderer.setAnimationLoop(null); // Detiene render
 }
 
 
 renderer.setAnimationLoop(() => {
+  if (jugadorDerrotado) return;
+
   // Crear una copia del arreglo para evitar errores al modificarlo
   for (let i = drones.length - 1; i >= 0; i--) {
     const drone = drones[i];
@@ -138,5 +149,58 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 document.getElementById('reiniciarBtn').addEventListener('click', () => {
-  location.reload(); // Recarga la página completamente
+  // Oculta HUD de Game Over
+  document.getElementById('hudGameOver').style.display = 'none';
+
+  // Muestra HUD de inicio
+  document.getElementById('hudInicio').style.display = 'block';
+
+  // Limpia el input
+  document.getElementById('nombreJugador').value = '';
+
+  // Limpia la escena
+  drones.forEach(drone => scene.remove(drone));
+  drones.length = 0;
+
+  // Reinicia estado
+  jugadorDerrotado = false;
+
+  // Reactiva animación
+  renderer.setAnimationLoop(() => {
+    if (jugadorDerrotado) return;
+
+    for (let i = drones.length - 1; i >= 0; i--) {
+      const drone = drones[i];
+      drone.position.z += 0.05;
+
+      const distanciaACamara = drone.position.distanceTo(camera.position);
+      if (distanciaACamara < 0.5) {
+        mostrarGameOver();
+        return;
+      }
+
+      if (drone.position.z > 2) {
+        scene.remove(drone);
+        drones.splice(i, 1);
+        continue;
+      }
+
+      const swordPos1 = new THREE.Vector3();
+      sword1.getWorldPosition(swordPos1);
+      const swordPos2 = new THREE.Vector3();
+      sword2.getWorldPosition(swordPos2);
+
+      if (
+        drone.position.distanceTo(swordPos1) < 0.4 ||
+        drone.position.distanceTo(swordPos2) < 0.4
+      ) {
+        scene.remove(drone);
+        drones.splice(i, 1);
+      }
+    }
+
+    if (Math.random() < 0.02) spawnDrone();
+
+    renderer.render(scene, camera);
+  });
 });
