@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: black;
+}
+
+canvas {
+  display: block;
+}
+
+#hud {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #00ffff;
+  font-size: 22px;
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 0 0 10px #00ffff;
+  z-index: 10;
+}
