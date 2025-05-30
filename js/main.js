@@ -90,6 +90,14 @@ renderer.setAnimationLoop(() => {
     const drone = drones[i];
     drone.position.z += 0.05;
 
+    // Verificar colisión con la cámara (jugador)
+const distanciaACamara = drone.position.distanceTo(camera.position);
+if (distanciaACamara < 0.5) {
+  mostrarGameOver();
+  return;
+}
+
+
     // Eliminar si se pasa de la cámara
     if (drone.position.z > 2) {
       scene.remove(drone);
@@ -111,26 +119,7 @@ renderer.setAnimationLoop(() => {
       scene.remove(drone);
       drones.splice(i, 1);
     }
-    for (let i = drones.length - 1; i >= 0; i--) {
-  const drone = drones[i];
-  drone.position.z += 0.05;
-
-  // Verificar colisión con la cámara
-  const distanciaACamara = drone.position.distanceTo(camera.position);
-  if (distanciaACamara < 0.5) {
-    mostrarGameOver();
-    return;
-  }
-
-  // Eliminar si se pasa
-  if (drone.position.z > 2) {
-    scene.remove(drone);
-    drones.splice(i, 1);
-    continue;
-  }
-
-  // Colisión con espadas...
-}
+   
 
   }
   
