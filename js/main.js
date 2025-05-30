@@ -20,9 +20,49 @@ document.getElementById('iniciarBtn').addEventListener('click', () => {
     return;
   }
 
-  hud.style.display = 'none'; // Oculta HUD
-  localStorage.setItem('jugador', nombre); // (opcional) Guarda el nombre
+  hud.style.display = 'none';
+  localStorage.setItem('jugador', nombre);
+
+  // 🔥 Aquí empieza la animación
+  renderer.setAnimationLoop(() => {
+    if (jugadorDerrotado) return;
+
+    for (let i = drones.length - 1; i >= 0; i--) {
+      const drone = drones[i];
+      drone.position.z += 0.05;
+
+      const distanciaACamara = drone.position.distanceTo(camera.position);
+      if (distanciaACamara < 0.5) {
+        mostrarGameOver();
+        return;
+      }
+
+      if (drone.position.z > 2) {
+        scene.remove(drone);
+        drones.splice(i, 1);
+        continue;
+      }
+
+      const swordPos1 = new THREE.Vector3();
+      sword1.getWorldPosition(swordPos1);
+      const swordPos2 = new THREE.Vector3();
+      sword2.getWorldPosition(swordPos2);
+
+      if (
+        drone.position.distanceTo(swordPos1) < 0.4 ||
+        drone.position.distanceTo(swordPos2) < 0.4
+      ) {
+        scene.remove(drone);
+        drones.splice(i, 1);
+      }
+    }
+
+    if (Math.random() < 0.02) spawnDrone();
+
+    renderer.render(scene, camera);
+  });
 });
+
 
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.position.z = 3;
@@ -93,53 +133,6 @@ function mostrarGameOver() {
 }
 
 
-renderer.setAnimationLoop(() => {
-  if (jugadorDerrotado) return;
-
-  // Crear una copia del arreglo para evitar errores al modificarlo
-  for (let i = drones.length - 1; i >= 0; i--) {
-    const drone = drones[i];
-    drone.position.z += 0.05;
-
-    // Verificar colisión con la cámara (jugador)
-const distanciaACamara = drone.position.distanceTo(camera.position);
-if (distanciaACamara < 0.5) {
-  mostrarGameOver();
-  return;
-}
-
-
-    // Eliminar si se pasa de la cámara
-    if (drone.position.z > 2) {
-      scene.remove(drone);
-      drones.splice(i, 1);
-      continue;
-    }
-
-    // Verificar colisión con espadas
-    const swordPos1 = new THREE.Vector3();
-    sword1.getWorldPosition(swordPos1);
-
-    const swordPos2 = new THREE.Vector3();
-    sword2.getWorldPosition(swordPos2);
-
-    if (
-      drone.position.distanceTo(swordPos1) < 0.4 ||
-      drone.position.distanceTo(swordPos2) < 0.4
-    ) {
-      scene.remove(drone);
-      drones.splice(i, 1);
-    }
-   
-
-  }
-  
-
-  // Spawn aleatorio de drones
-  if (Math.random() < 0.02) spawnDrone();
-
-  renderer.render(scene, camera);
-});
 
 
 
