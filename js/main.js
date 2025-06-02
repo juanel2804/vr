@@ -62,6 +62,29 @@ const swordMat = new THREE.MeshStandardMaterial({
     scene.add(controller1);
     scene.add(controller2);
 
+    let dronesDestruidos = 0;
+
+// Crear canvas para mostrar texto en textura
+const scoreCanvas = document.createElement('canvas');
+scoreCanvas.width = 256;
+scoreCanvas.height = 64;
+const scoreCtx = scoreCanvas.getContext('2d');
+scoreCtx.font = '28px Arial';
+scoreCtx.fillStyle = '#00ffff';
+scoreCtx.fillText('Score: 0', 10, 40);
+
+// Crear textura y plano
+const scoreTexture = new THREE.CanvasTexture(scoreCanvas);
+const scoreMaterial = new THREE.MeshBasicMaterial({ map: scoreTexture, transparent: true });
+const scorePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.15), scoreMaterial);
+
+// Posicionar el score arriba a la derecha del visor VR
+scorePlane.position.set(0.6, 0.5, -1.5);
+
+// Pegarlo a la cámara
+camera.add(scorePlane);
+scene.add(camera);
+
     renderer.setAnimationLoop(() => {
       drones.forEach((drone, i) => {
         drone.position.z += 0.05;
@@ -73,10 +96,17 @@ const swordMat = new THREE.MeshStandardMaterial({
         [sword1, sword2].forEach((sword) => {
           const swordPos = new THREE.Vector3();
           sword.getWorldPosition(swordPos);
-          if (drone.position.distanceTo(swordPos) < 0.4) {
-            scene.remove(drone);
-            drones.splice(i, 1);
-          }
+         if (drone.position.distanceTo(swordPos) < 0.4) {
+  scene.remove(drone);
+  drones.splice(i, 1);
+  dronesDestruidos++;
+
+  scoreCtx.clearRect(0, 0, scoreCanvas.width, scoreCanvas.height);
+  scoreCtx.fillStyle = '#00ffff';
+  scoreCtx.fillText(`Score: ${dronesDestruidos}`, 10, 40);
+  scoreTexture.needsUpdate = true;
+}
+
         });
       });
 
