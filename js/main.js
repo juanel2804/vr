@@ -12,6 +12,15 @@
     renderer.xr.enabled = true;
     document.body.appendChild(renderer.domElement);
     document.body.appendChild(VRButton.createButton(renderer));
+    renderer.xr.addEventListener('sessionstart', () => {
+  document.getElementById('hudInicio').style.display = 'none';
+  document.getElementById('hudGameOver').style.display = 'none';
+});
+
+renderer.xr.addEventListener('sessionend', () => {
+  document.getElementById('hudInicio').style.display = 'block';
+});
+
 
     const light = new THREE.PointLight(0xffffff, 1);
     light.position.set(0, 4, 4);
@@ -80,3 +89,6 @@ const swordMat = new THREE.MeshStandardMaterial({
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
+  document.getElementById('iniciarBtn').addEventListener('click', () => {
+  document.getElementById('hudInicio').style.display = 'none';
+});
