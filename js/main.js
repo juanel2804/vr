@@ -64,9 +64,16 @@ scene.add(controller2);
 
 let dronesDestruidos = 0;
 let droneSpeed = 0.05;
+let droneSpawnRate = 0.02; // frecuencia inicial (2% de probabilidad por frame)
+
 function aumentarDificultad() {
   if (dronesDestruidos % 5 === 0 && droneSpeed < 0.2) {
     droneSpeed += 0.01;
+  }
+}
+function ajustarFrecuencia() {
+  if (dronesDestruidos % 5 === 0 && droneSpawnRate < 0.08) {
+    droneSpawnRate += 0.005;
   }
 }
 
@@ -110,6 +117,8 @@ renderer.setAnimationLoop(() => {
         drones.splice(i, 1);
         dronesDestruidos++;
         aumentarDificultad();
+        ajustarFrecuencia();
+
 
         scoreCtx.clearRect(0, 0, scoreCanvas.width, scoreCanvas.height);
         scoreCtx.fillStyle = '#00ffff';
@@ -121,7 +130,8 @@ renderer.setAnimationLoop(() => {
     });
   });
 
-  if (Math.random() < 0.02) spawnDrone();
+  if (Math.random() < droneSpawnRate) spawnDrone();
+
   renderer.render(scene, camera);
 });
 
