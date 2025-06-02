@@ -62,6 +62,29 @@ controller2.add(sword2);
 scene.add(controller1);
 scene.add(controller2);
 
+const raycaster = new THREE.Raycaster();
+const tempMatrix = new THREE.Matrix4();
+
+function setupClickController(controller) {
+  controller.addEventListener('selectstart', () => {
+    if (!juegoIniciado) {
+      tempMatrix.identity().extractRotation(controller.matrixWorld);
+      raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+      raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+
+      const intersects = raycaster.intersectObject(inicioPanel);
+      if (intersects.length > 0) {
+        inicioPanel.visible = false;
+        juegoIniciado = true;
+      }
+    }
+  });
+}
+
+setupClickController(controller1);
+setupClickController(controller2);
+
+
 let dronesDestruidos = 0;
 let droneSpeed = 0.05;
 let droneSpawnRate = 0.02; // frecuencia inicial (2% de probabilidad por frame)
@@ -96,6 +119,56 @@ const scorePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.15), scoreMater
 // Posicionar el score arriba a la derecha del visor VR
 scorePlane.position.set(0.6, 0.5, -1.5);
 
+// HUD 3D de Game Over
+const gameOverCanvas = document.createElement('canvas');
+gameOverCanvas.width = 512;
+gameOverCanvas.height = 128;
+const gameOverCtx = gameOverCanvas.getContext('2d');
+gameOverCtx.font = 'bold 48px Arial';
+gameOverCtx.fillStyle = '#ff0044';
+gameOverCtx.fillText('¡GAME OVER!', 80, 80);
+
+const gameOverTexture = new THREE.CanvasTexture(gameOverCanvas);
+const gameOverMaterial = new THREE.MeshBasicMaterial({ map: gameOverTexture, transparent: true });
+const gameOverPlane = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 0.4), gameOverMaterial);
+gameOverPlane.position.set(0, 0, -2); // Frente a la vista
+gameOverPlane.visible = false; // Oculto al inicio
+
+camera.add(gameOverPlane); // Se mueve con la cámara
+let juegoIniciado = false;
+
+// Panel 3D de inicio
+const inicioCanvas = document.createElement('canvas');
+inicioCanvas.width = 512;
+inicioCanvas.height = 256;
+const inicioCtx = inicioCanvas.getContext('2d');
+
+// Fondo del panel
+inicioCtx.fillStyle = 'black';
+inicioCtx.fillRect(0, 0, 512, 256);
+
+// Texto título
+inicioCtx.fillStyle = '#00ffff';
+inicioCtx.font = 'bold 32px Arial';
+inicioCtx.fillText('Espadas vs Drones VR', 70, 60);
+
+// Instrucción
+inicioCtx.font = '24px Arial';
+inicioCtx.fillText('Pulsa el botón para comenzar', 90, 120);
+
+// Botón visual
+inicioCtx.fillStyle = '#00cccc';
+inicioCtx.fillRect(180, 160, 150, 50);
+inicioCtx.fillStyle = 'black';
+inicioCtx.fillText('INICIAR', 210, 195);
+
+const inicioTexture = new THREE.CanvasTexture(inicioCanvas);
+const inicioMaterial = new THREE.MeshBasicMaterial({ map: inicioTexture, transparent: true });
+const inicioPanel = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 0.9), inicioMaterial);
+inicioPanel.position.set(0, 0, -2);
+camera.add(inicioPanel); // Pegado a cámara
+
+
 // Pegarlo a la cámara
 camera.add(scorePlane);
 scene.add(camera);
@@ -109,7 +182,10 @@ renderer.setAnimationLoop(() => {
   drones.splice(i, 1);
 
   // Mostrar pantalla de Game Over
-  document.getElementById('hudGameOver').style.display = 'block';
+  gameOverPlane.visible = true;
+  setTimeout(() => window.location.reload(), 3000);
+
+
 
   // Detener el juego
   renderer.setAnimationLoop(null);
@@ -137,7 +213,8 @@ renderer.setAnimationLoop(() => {
     });
   });
 
-  if (Math.random() < droneSpawnRate) spawnDrone();
+  if (juegoIniciado && Math.random() < droneSpawnRate) spawnDrone();
+
 
   renderer.render(scene, camera);
 });
@@ -146,10 +223,4 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
-});
-document.getElementById('iniciarBtn').addEventListener('click', () => {
-  document.getElementById('hudInicio').style.display = 'none';
-});
-document.getElementById('reiniciarBtn').addEventListener('click', () => {
-  window.location.reload(); // Recarga la página y reinicia el juego
 });
