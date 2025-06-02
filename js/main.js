@@ -105,9 +105,16 @@ renderer.setAnimationLoop(() => {
     drone.position.z += droneSpeed;
 
     if (drone.position.z > 2) {
-      scene.remove(drone);
-      drones.splice(i, 1);
-    }
+  scene.remove(drone);
+  drones.splice(i, 1);
+
+  // Mostrar pantalla de Game Over
+  document.getElementById('hudGameOver').style.display = 'block';
+
+  // Detener el juego
+  renderer.setAnimationLoop(null);
+}
+
 
     [sword1, sword2].forEach((sword) => {
       const swordPos = new THREE.Vector3();
@@ -142,4 +149,7 @@ window.addEventListener('resize', () => {
 });
 document.getElementById('iniciarBtn').addEventListener('click', () => {
   document.getElementById('hudInicio').style.display = 'none';
+});
+document.getElementById('reiniciarBtn').addEventListener('click', () => {
+  window.location.reload(); // Recarga la página y reinicia el juego
 });
