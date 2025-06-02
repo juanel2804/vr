@@ -177,7 +177,7 @@ renderer.setAnimationLoop(() => {
   drones.forEach((drone, i) => {
     drone.position.z += droneSpeed;
 
-    if (drone.position.z > 2) {
+    if (drone.position.z > 0.5) {
   scene.remove(drone);
   drones.splice(i, 1);
 
