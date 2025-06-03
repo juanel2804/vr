@@ -177,19 +177,28 @@ renderer.setAnimationLoop(() => {
   drones.forEach((drone, i) => {
     drone.position.z += droneSpeed;
 
-    if (drone.position.z > 0.5) {
+   const camPos = new THREE.Vector3();
+camera.getWorldPosition(camPos);
+
+if (drone.position.distanceTo(camPos) < 0.3) {
   scene.remove(drone);
   drones.splice(i, 1);
 
-  // Mostrar pantalla de Game Over
+  // Mostrar HUD de Game Over con score
+  gameOverCtx.clearRect(0, 0, gameOverCanvas.width, gameOverCanvas.height);
+  gameOverCtx.font = 'bold 48px Arial';
+  gameOverCtx.fillStyle = '#ff0044';
+  gameOverCtx.fillText('¡GAME OVER!', 80, 70);
+  gameOverCtx.font = '24px Arial';
+  gameOverCtx.fillStyle = '#ffffff';
+  gameOverCtx.fillText(`Puntaje: ${dronesDestruidos}`, 150, 110);
+  gameOverTexture.needsUpdate = true;
+
   gameOverPlane.visible = true;
   setTimeout(() => window.location.reload(), 3000);
-
-
-
-  // Detener el juego
   renderer.setAnimationLoop(null);
 }
+
 
 
     [sword1, sword2].forEach((sword) => {
