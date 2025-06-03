@@ -5,7 +5,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x111122);
 
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.z = 3;
+
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -179,16 +179,21 @@ camera.add(inicioPanel); // Pegado a cámara
 
 // Pegarlo a la cámara
 camera.add(scorePlane);
-scene.add(camera);
+const player = new THREE.Group();
+player.add(camera);
+scene.add(player);
+
 
 renderer.setAnimationLoop(() => {
   drones.forEach((drone, i) => {
     drone.position.z += droneSpeed;
 
    const cuerpoPos = new THREE.Vector3();
+cuerpoColision.updateMatrixWorld(); // 🔁 NECESARIO antes de obtener posición
 cuerpoColision.getWorldPosition(cuerpoPos);
 
-if (drone.position.distanceTo(cuerpoPos) < 0.5) {
+if (drone.position.distanceTo(cuerpoPos) < 0.6) {
+
 
   scene.remove(drone);
   drones.splice(i, 1);
