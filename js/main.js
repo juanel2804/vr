@@ -98,7 +98,7 @@ setupClickController(controller2);
 
 
 let dronesDestruidos = 0;
-let droneSpeed = 0.05;
+let droneSpeed = 0.015;
 let droneSpawnRate = 0.02; // frecuencia inicial (2% de probabilidad por frame)
 
 function aumentarDificultad() {
