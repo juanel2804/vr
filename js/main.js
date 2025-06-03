@@ -32,10 +32,22 @@ const droneMat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
 
 function spawnDrone() {
   const drone = new THREE.Mesh(droneGeo, droneMat);
-  drone.position.set(Math.random() * 4 - 2, Math.random() * 2, -5);
+
+  // Posición aleatoria alrededor del jugador
+  const radius = 5; // distancia desde donde aparecerán
+  const angle = Math.random() * Math.PI * 2;
+  const height = Math.random() * 2 + 0.5; // entre 0.5 y 2.5 de altura
+
+  const x = Math.cos(angle) * radius;
+  const z = Math.sin(angle) * radius;
+
+  drone.position.set(x, height, z);
+  drone.userData.target = new THREE.Vector3(0, height, 0); // hacia el centro (jugador)
+
   scene.add(drone);
   drones.push(drone);
 }
+
 
 // Espadas
 const swordGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.8, 32);
@@ -186,7 +198,11 @@ scene.add(player);
 
 renderer.setAnimationLoop(() => {
   drones.forEach((drone, i) => {
-    drone.position.z += droneSpeed;
+    // Mover el dron hacia el jugador
+const target = drone.userData.target;
+const direction = new THREE.Vector3().subVectors(target, drone.position).normalize();
+drone.position.addScaledVector(direction, droneSpeed);
+
 
    const cuerpoPos = new THREE.Vector3();
 cuerpoColision.updateMatrixWorld(); // 🔁 NECESARIO antes de obtener posición
