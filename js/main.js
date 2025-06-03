@@ -137,6 +137,14 @@ gameOverPlane.visible = false; // Oculto al inicio
 camera.add(gameOverPlane); // Se mueve con la cámara
 let juegoIniciado = false;
 
+const cuerpoColision = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.3, 0.3, 1.2, 16), // base pequeña, altura grande
+  new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0 }) // invisible
+);
+cuerpoColision.position.set(0, 0.6, 0); // Altura ajustada (del piso al pecho)
+camera.add(cuerpoColision); // Se mueve contigo
+
+
 // Panel 3D de inicio
 const inicioCanvas = document.createElement('canvas');
 inicioCanvas.width = 512;
@@ -177,10 +185,11 @@ renderer.setAnimationLoop(() => {
   drones.forEach((drone, i) => {
     drone.position.z += droneSpeed;
 
-   const camPos = new THREE.Vector3();
-camera.getWorldPosition(camPos);
+   const cuerpoPos = new THREE.Vector3();
+cuerpoColision.getWorldPosition(cuerpoPos);
 
-if (drone.position.distanceTo(camPos) < 0.3) {
+if (drone.position.distanceTo(cuerpoPos) < 0.5) {
+
   scene.remove(drone);
   drones.splice(i, 1);
 
