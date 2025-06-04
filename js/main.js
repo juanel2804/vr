@@ -63,14 +63,15 @@ const swordMat = new THREE.MeshStandardMaterial({
 const controller1 = renderer.xr.getController(0);
 const controller2 = renderer.xr.getController(1);
 
+const sword1 = new THREE.Mesh(swordGeo, swordMat);
 sword1.rotation.x = Math.PI / 2; // Gira 90° hacia el frente
 sword1.position.z = -0.4; // Llévala al frente del control
 controller1.add(sword1);
 
-sword2.rotation.x = Math.PI / 2.0;
+const sword2 = new THREE.Mesh(swordGeo, swordMat);
+sword2.rotation.x = Math.PI / 2;
 sword2.position.z = -0.4;
 controller2.add(sword2);
-
 
 scene.add(controller1);
 scene.add(controller2);
