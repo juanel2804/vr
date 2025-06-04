@@ -67,7 +67,7 @@ sword1.rotation.x = Math.PI / 2; // Gira 90° hacia el frente
 sword1.position.z = -0.4; // Llévala al frente del control
 controller1.add(sword1);
 
-sword2.rotation.x = Math.PI / 2;
+sword2.rotation.x = Math.PI / 2.0;
 sword2.position.z = -0.4;
 controller2.add(sword2);
 
